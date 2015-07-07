@@ -19,12 +19,11 @@ CREATE TABLE players (
     name TEXT
 );
 
--- creates table matches with 4 columns
+-- creates table matches with 3 columns
 CREATE TABLE matches (
     match SERIAL PRIMARY KEY,
-    p1 INTEGER REFERENCES players(id),
-    p2 INTEGER REFERENCES players(id),
-    win INTEGER
+    winner INTEGER REFERENCES players(id),
+    loser INTEGER REFERENCES players(id)
 );
 
 -- creates view finding the number of matches each player has played.
@@ -32,15 +31,15 @@ CREATE VIEW played AS
 SELECT players.id, COUNT(matches.match) AS match_ct
 FROM players
 LEFT JOIN matches
-ON players.id = matches.p1 OR players.id = matches.p2
+ON players.id = matches.winner OR players.id = matches.loser
 GROUP BY players.id;
 
 -- creates view finding the number of wins for each player.
 CREATE VIEW won AS
-SELECT players.id, COUNT(matches.win) AS win_ct
+SELECT players.id, COUNT(matches.winner) AS win_ct
 FROM players
 LEFT JOIN matches
-ON players.id = matches.win
+ON players.id = matches.winner
 GROUP BY players.id;
 
 -- creates view finding the player standings.
